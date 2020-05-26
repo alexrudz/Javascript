@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Програма расчета размеров фундаментов по R0</title>
+    <link rel="stylesheet" href="./style.css"> /*
+    <link rel="stylesheet" href="./bootstrap.min.css">*/
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="object-code">Шифр объекта</span>
+                </div>
+                <input class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="object-name">Название объекта</span>
+                </div>
+                <input class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+            </div>
+        </div>
+        <input type="file" id="file-input" /> <button onclick="calc();">Расчет</button>
+
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <label for="r0">R0,т/м2</label>
+                <input data-rule='number' oninput="up(this)" class="form-control" id="r-0" value="20" required>
+            </div>
+            <div class="col-md-8 mb-3">
+                <label for="PressurePlotView">Ограничение эпюры</label>
+                <select class="custom-select" id="e-0-val">
+          <option value="1">E0=0.100 Трапеция с отношением Rmin/Rmax=0,25</option>
+          <option value="2">E0=0.167 Треугольная без отрыва подошвы</option>
+          <option value="3">E0=0.210 Треугольная с отрывом 1/4 площади подошвы</option>
+          <option value="4">E0=0.230 Треугольная с отрывом 1/3 площади подошвы</option>
+          <option value="5">E0=0.250 Треугольная с отрывом 1/4 стороны подошвы</option>
+          <option value="6">E0=0.280 Треугольная с отрывом 1/3 стороны подошвы</option>
+        </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1 mb-3">
+                <p>Коэффициент надежности по нагрузке γf</p>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="coefficientForNz">N(z)</label>
+                <input data-rule='number' oninput="up(this)" class="form-control" id="coefficient-for-nz" value="1.35" required>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="coefficientForQx">Q(x)</label>
+                <input data-rule='number' oninput="up(this)" class="form-control" id="coefficient-for-qx" value="1.5" required>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="coefficientForQy">Q(y)</label>
+                <input data-rule='number' oninput="up(this)" class="form-control" id="coefficient-for-qy" value="1.5" required>
+            </div>
+        </div>
+        <hr>
+        <h8> Характеристики фундаментов </h8>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="foundationHeight">Нф-высота фундамента,м</label>
+                <input data-rule='number' type='number' oninput="up(this)" step="0.01" maxlength="1" class="form-control non-arrow" id="foundation-height" value="1.2" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="columnSizeLx">Размер подколонника L(x),м</label>
+                <input data-rule='number' type='number' oninput="up(this)" class="form-control" min="1" max="5" step="0.1" id="column-size-lx" value="0.5" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="columnSizeLy">Размер подколонника L(y),м</label>
+                <input data-rule='number' type='number' oninput="up(this)" class="form-control" id="column-size-ly" value="0.5" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="foundationDepth">Нз-глубина заложения фундамента,м</label>
+                <input data-rule='number' type='number' oninput="up(this)" class="form-control" id="foundation-depth" value="1.5" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="baseSoleSizeLx">Размер подошвы L(x),м</label>
+                <input data-rule='number' type='number' oninput="up(this)" class="form-control" id="base-sole-size-lx" value="1.5" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="baseSoleSizeLy">Размер подошвы L(y),м</label>
+                <input data-rule='number' type='number' oninput="up(this)" class="form-control" id="base-sole-size-ly" value="1.5" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="foundationSoilDensity">Объемный вес фундамента и грунта</label>
+                <input data-rule='number' type='number' oninput="up(this)" class="form-control" id="foundation-soil-density" value="1.8" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="foundationWeightUnder">Вес фундамента под землей,т</label>
+                <input data-rule='number' oninput="up(this)" class="form-control" id="foundation-weight-under" readonly>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="foundationWeightAbove">Вес фундамента над землей,т</label>
+                <input data-rule='number' oninput="up(this)" class="form-control" id="foundation-weight-above" readonly>
+            </div>
+        </div>
+        <hr>
+        <h5 style="text-align:center;"> Нагрузки на фундамент </h5>
+
+        <div class="col-md-12">
+            <center><img src="./img/1.jpg"></center>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            <p>#</p>
+                        </th>
+                        <th scope="col">
+                            <p>N(z),т</p>
+                        </th>
+                        <th scope="col">
+                            <p>M(x),т*м</p>
+                        </th>
+                        <th scope="col">
+                            <p>Q(x),т</p>
+                        </th>
+                        <th scope="col">
+                            <p>M(y),т*м</p>
+                        </th>
+                        <th scope="col">
+                            <p>Q(y),т</p>
+                        </th>
+                        <th scope="col">
+                            <p>N(z),т</p>
+                        </th>
+                        <th scope="col">
+                            <p>M(x),т*м</p>
+                        </th>
+                        <th scope="col">
+                            <p>M(y),т*м</p>
+                        </th>
+                        <th scope="col">
+                            <p>Ex</p>
+                        </th>
+                        <th scope="col">
+                            <p>Ey</p>
+                        </th>
+                        <th scope="col">
+                            <p>Rср</p>
+                        </th>
+                        <th scope="col">
+                            <p>Rmax(x)</p>
+                        </th>
+                        <th scope="col">
+                            <p>min/max</p>
+                        </th>
+                        <th scope="col">
+                            <p>Rmax(y)</p>
+                        </th>
+                        <th scope="col">
+                            <p>min/max</p>
+                        </th>
+                        <th scope="col">
+                            <p>Rmax(x,y)</p>
+                        </th>
+                        <th scope="col">
+                            <p>Rmin(x)</p>
+                        </th>
+                        <th scope="col">
+                            <p>Rmin(y)</p>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td class="full"> <input data-rule='number' type='number' oninput="up(this)" class="full" id="n-z1" value="30" /> </td>
+                        <td class="full"> <input data-rule='number' type='number' oninput="up(this)" class="full" input id="m-x1" value="2" /> </td>
+                        <td class="full"> <input data-rule='number' type='number' oninput="up(this)" class="full" input id="q-x1" value="0.5" /> </td>
+                        <td class="full"> <input data-rule='number' type='number' oninput="up(this)" class="full" input id="m-y1" value="1" /> </td>
+                        <td class="full"> <input data-rule='number' type='number' oninput="up(this)" class="full" input id="q-y1" value="0.3" /> </td>
+                        <!-- bll-base level load нагрузка в уровне подошвы -->
+                        <td class='full'> <input class='full' oninput="up(this)" id="base-level-load-nz1" readonly></td>
+                        <td class='full'> <input class='full' oninput="up(this)" id="base-level-load-mx1" readonly></td>
+                        <td class='full'> <input class='full' oninput="up(this)" id="base-level-load-my1" readonly></td>
+                        <!-- gT-general terms общие условия -->
+                        <td class='full'> <input data-rule='number' oninput="up(this)" class='fullGtEX' id="gen-terms-eX1" readonly></td>
+                        <td class='full'> <input data-rule='number' oninput="up(this)" class='fullGtEY' id="gen-terms-eY1" readonly></td>
+                        <td class='full'> <input data-rule='number' oninput="up(this)" class='full' id='gen-terms-rmiddle1' readonly></td>
+                        <!-- Ax-axis x ось X -->
+                        <td class='full'> <input class='full' oninput="up(this)" id="ax-rmax-x1" readonly></td>
+                        <td class='full'> <input class='full' oninput="up(this)" id="ax-min-max-x1" readonly></td>
+                        <!-- Ay-axis y ось y -->
+                        <td class='full'> <input class='full' oninput="up(this)" id="ay-rmax-y1" readonly></td>
+                        <td class='full'> <input class='full' oninput="up(this)" id="ay-min-max-y1" readonly></td>
+                        <!-- x и y -->
+                        <td class='full'> <input class='full' oninput="up(this)" id="ax-ay-rmax1" readonly></td>
+                        <!-- Min axis x -->
+                        <td class='full'> <input class='full' oninput="up(this)" id="ax-rmin1" readonly></td>
+                        <!-- Min axis Y -->
+                        <td class='full'> <input class='full' oninput="up(this)" id="ay-rmin1" readonly></td>
+                        <td class='full'> <input class='full' oninput="up(this)" id="ay-Rmin1" readonly></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- <link rel="script" href="./jquery-3.4.1.min.js">
+<link rel="script" href="./script.js"> -->
+    <script src="script.js"></script>
+    <!-- <script src='jquery-3.4.1.min.js'></script> -->
+</body>
+// жыве Беларусь!
+
+</html>
